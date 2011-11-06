@@ -10,16 +10,37 @@
     color: white;
 }
 
-div.sunrise {
+div.rise {
     position: absolute;
     left: 10px;
-    top: 150px;
+    top: 130px;
     width: 50px;
 
     text-align: left;
     font-size: 12px;
-    border: 1px dotted green;
 }
+div.set {
+    position: absolute;
+    right: 10px;
+    top: 130px;
+    width: 50px;
+
+    text-align: right;
+    font-size: 12px;
+}
+.sunset {
+    /*border: 1px dotted pink;*/
+}
+.sunrise {
+    /*border: 1px dotted orange;*/
+}
+.moonrise {
+    /*border: 1px dotted gray;*/
+}
+.moonset {
+    /*border: 1px dotted gray;*/
+}
+
 div.time {
     position: absolute;
     left: 50px;
@@ -29,26 +50,24 @@ div.time {
     text-align: center;
     font-size: 48px;
 
-    border: 1px dotted red;
-}
-div.sunset {
-    position: absolute;
-    right: 10px;
-    top: 150px;
-    width: 50px;
-
-    text-align: right;
-    font-size: 12px;
-    border: 1px dotted green;
+    /*border: 1px dotted red;*/
 }
 
 div.sun {
     position: absolute;
-    border: 1px dotted yellow;
+    /*border: 1px dotted yellow;*/
+}
+div.moon {
+    position: absolute;
+    /*border: 1px dotted gray;*/
 }
 div.sun img {
     width: 64px;
 }
 div.sun.night {
     opacity: 0.2;
+}
+
+div.moon img {
+    width: 64px;
 }
