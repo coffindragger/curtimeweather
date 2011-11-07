@@ -73,22 +73,24 @@
                     var observation = obj.history.observations[i];
 
                     if (!(observation.metar in data.metar_history)) {
+                        //console.log(observation)
+
                         data.target.curweather('update', observation.metar);
                         data.metar_history[observation.metar] = true;
-                        data.pressure_history.push(data.metar.pressure_in)
+                        if (data.metar.pressure_sea) data.pressure_history.push(data.metar.pressure_sea)
                         data.tempdew_history.push(data.metar.temp_f+":"+data.metar.dewpoint_f);
                         data.temp_history.push(data.metar.temp_f)
-                        data.dew_history.push(data.metar.dewpoint_f)
+                        if (data.metar.temp_f > data.temp_max) data.temp_max = data.metar.temp_f
+                        if (data.metar.dew_f > data.temp_max) data.temp_max = data.metar.dew_f
+                        if (data.metar.temp_f < data.temp_min) data.temp_min = data.metar.temp_f
+                        if (data.metar.dew_f < data.temp_min) data.temp_min = data.metar.dew_f
 
-                        var num_hours = 36;
-                        data.pressure_line.sparkline(data.pressure_history.slice(num_hours*-1), {
-                            'width': "100px",
-                            'height': "28px",
-                            'fillColor': false,
-                            'lineColor': "grey",
-                            'minSpotColor': "#666666",
-                            'maxSpotColor': "#999999",
-                        })
+                        data.dew_history.push(data.metar.dewpoint_f)
+                        var precip = observation.precipm.replace("-9999.00", "0")
+                        data.precip_history.push(precip)
+                        data.precipitation.html(precip)
+
+                        var num_hours = 24;
                         data.temp_line.sparkline(data.temp_history.slice(num_hours*-1), {
                             'width': "100px",
                             'height': "28px",
@@ -96,6 +98,8 @@
                             'lineColor': "orange",
                             'minSpotColor': "#666666",
                             'maxSpotColor': "#999999",
+                            'chartRangeMin': data.temp_min,
+                            'chartRangeMax': data.temp_max,
                         })
                         data.temp_line.sparkline(data.dew_history.slice(num_hours*-1), {
                             'fillColor': false,
@@ -105,8 +109,26 @@
                             'lineColor': "blue",
                             'minSpotColor': "#666666",
                             'maxSpotColor': "#999999",
+                            'chartRangeMin': data.temp_min,
+                            'chartRangeMax': data.temp_max,
                         })
 
+                        data.pressure_line.sparkline(data.pressure_history.slice(num_hours*-1), {
+                            'width': "100px",
+                            'height': "28px",
+                            'fillColor': false,
+                            'lineColor': "grey",
+                            'minSpotColor': "#666666",
+                            'maxSpotColor': "#999999",
+                        })
+                        data.precip_line.sparkline(data.precip_history.slice(num_hours*-1), {
+                            'width': "100px",
+                            'height': "28px",
+                            'fillColor': false,
+                            'lineColor': "grey",
+                            'minSpotColor': "#666666",
+                            'maxSpotColor': "#999999",
+                        })
                     }
 
                 }
@@ -212,9 +234,12 @@
                         lastest_day: null,
                         metar_history: {},
                         temp_history: [],
+                        temp_min: 100,
+                        temp_max: 0,
                         dew_history: [],
                         tempdew_history: [],
                         pressure_history: [],
+                        precip_history: [],
 
                     };
                     $this.data(PLUGIN, data);
@@ -232,9 +257,11 @@
                     data.pressure = $this.find('.pressure')
                     data.conditions = $this.find('.conditions')
                     data.cloudcover = $this.find('.cloudcover')
+                    data.precipitation = $this.find('.precipitation')
 
                     data.pressure_line = $this.find('.curpressure .sparkline')
                     data.temp_line = $this.find('.curtemp .sparkline')
+                    data.precip_line = $this.find('.curprecip .sparkline')
 
 
                     tick(data);
@@ -259,11 +286,23 @@
                 var $this = $(this),
                 data = $this.data(PLUGIN);
 
+
                 data.metar = parse_metar(metar_string)
+                //console.log(data.metar)
 
                 data.temperature.html(Math.round(data.metar.temp_f))
                 data.dewpoint.html(Math.round(data.metar.dewpoint_f))
-                data.pressure.html(data.metar.pressure_in)
+
+                //data.pressure.html(data.metar.pressure_sea)
+
+                if (data.metar.pressure_sea) {
+                    var min = 900
+                    var max = 1100
+                    var mercury = (data.metar.pressure_sea-min) / (max - min)
+                    mercury *= 100
+                    data.target.find('.pressure .mercury').css({'height': (mercury+1)+"%", 'top':(100-mercury)+'%'})
+                }
+
 
                 data.cloudcover.html('');
                 for (var i=0; i < data.metar.clouds.length; i++) {

@@ -8,6 +8,8 @@
 
     background: black;
     color: white;
+
+    overflow: hidden;
 }
 
 div.rise {
@@ -88,7 +90,7 @@ div.curtemp {
 }
 div.tempdew {
     float: right;
-    font-size: 12px;
+    font-size: 14px;
 }
 div.temperature {
     color: orange;
@@ -110,10 +112,37 @@ div.curpressure label.unit {
     font-size: 16px;
 }
 div.pressure {
-    float: right;
+    float: left;
+    width: 12px;
+    height: 28px;
     font-size: 12px;
+
+
+    border: 1px solid gray;
+}
+div.pressure div.mercury {
+    background: silver;
+    width: 12px;
+    position: relative;
+    height: 0%;
 }
 .current .sparkline {
     float: left;
     width: 100px;
+    margin-right: 8px;
+}
+
+div.curprecip {
+    width: 150px;
+    margin: auto;
+}
+div.curprecip label.unit {
+    font-size: 16px;
+    float: left;
+    padding-top: 6px;
+}
+div.precipitation {
+    float: left;
+    font-size: 24px;
+    text-align: center;
 }
