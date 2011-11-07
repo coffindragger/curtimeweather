@@ -83,22 +83,37 @@ div.cloudcover img {
 }
 
 div.curtemp {
-    width: 100px;
+    width: 150px;
     margin: auto;
 }
 div.tempdew {
     float: right;
     font-size: 12px;
 }
+div.temperature {
+    color: orange;
+}
+div.dewpoint {
+    color: blue;
+}
+
 div.current label.unit {
     float: right;
     font-size: 24px;
 }
 
 div.curpressure {
-    width: 100px;
+    width: 150px;
     margin: auto;
+}
+div.curpressure label.unit {
+    font-size: 16px;
 }
 div.pressure {
     float: right;
+    font-size: 12px;
+}
+.current .sparkline {
+    float: left;
+    width: 100px;
 }

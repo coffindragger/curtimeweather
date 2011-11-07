@@ -73,8 +73,40 @@
                     var observation = obj.history.observations[i];
 
                     if (!(observation.metar in data.metar_history)) {
-                        data.metar_history[observation.metar] = true;
                         data.target.curweather('update', observation.metar);
+                        data.metar_history[observation.metar] = true;
+                        data.pressure_history.push(data.metar.pressure_in)
+                        data.tempdew_history.push(data.metar.temp_f+":"+data.metar.dewpoint_f);
+                        data.temp_history.push(data.metar.temp_f)
+                        data.dew_history.push(data.metar.dewpoint_f)
+
+                        var num_hours = 36;
+                        data.pressure_line.sparkline(data.pressure_history.slice(num_hours*-1), {
+                            'width': "100px",
+                            'height': "28px",
+                            'fillColor': false,
+                            'lineColor': "grey",
+                            'minSpotColor': "#666666",
+                            'maxSpotColor': "#999999",
+                        })
+                        data.temp_line.sparkline(data.temp_history.slice(num_hours*-1), {
+                            'width': "100px",
+                            'height': "28px",
+                            'fillColor': false,
+                            'lineColor': "orange",
+                            'minSpotColor': "#666666",
+                            'maxSpotColor': "#999999",
+                        })
+                        data.temp_line.sparkline(data.dew_history.slice(num_hours*-1), {
+                            'fillColor': false,
+                            'composite': true,
+                            'width': "100px",
+                            'height': "28px",
+                            'lineColor': "blue",
+                            'minSpotColor': "#666666",
+                            'maxSpotColor': "#999999",
+                        })
+
                     }
 
                 }
@@ -179,6 +211,11 @@
 
                         lastest_day: null,
                         metar_history: {},
+                        temp_history: [],
+                        dew_history: [],
+                        tempdew_history: [],
+                        pressure_history: [],
+
                     };
                     $this.data(PLUGIN, data);
 
@@ -195,6 +232,9 @@
                     data.pressure = $this.find('.pressure')
                     data.conditions = $this.find('.conditions')
                     data.cloudcover = $this.find('.cloudcover')
+
+                    data.pressure_line = $this.find('.curpressure .sparkline')
+                    data.temp_line = $this.find('.curtemp .sparkline')
 
 
                     tick(data);
