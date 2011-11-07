@@ -70,7 +70,7 @@ div.sun img {
     width: 64px;
 }
 div.sun.night {
-    opacity: 0.2;
+    opacity: 0.5;
 }
 
 div.moon img {
@@ -83,7 +83,7 @@ div.cloudcover img {
 }
 
 div.curtemp {
-    width: 50px;
+    width: 100px;
     margin: auto;
 }
 div.tempdew {
