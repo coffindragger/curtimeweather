@@ -41,17 +41,22 @@ div.set {
     /*border: 1px dotted gray;*/
 }
 
-div.time {
+div.current {
     position: absolute;
     left: 50px;
-    top: 130px;
+    top: 100px;
     width: 200px;
-
     text-align: center;
-    font-size: 48px;
+
 
     /*border: 1px dotted red;*/
 }
+div.time {
+    font-size: 48px;
+}
+div.temperature {
+}
+
 
 div.sun {
     position: absolute;
@@ -70,4 +75,9 @@ div.sun.night {
 
 div.moon img {
     width: 64px;
+}
+
+div.cloudcover img {
+    width: 300px;
+    opacity: 0.8;
 }

@@ -30,15 +30,21 @@
     }
 
 
-
-    function tick(data) {
-        d = new Date();
-
+    function format_time(d)
+    {
         var h = d.getHours();
         if (h < 10) h = "0"+h;
         var m = d.getMinutes();
         if (m < 10) m = "0"+m;
-        var s = h+":"+m;
+        return h+":"+m;
+    }
+
+    function tick(data) {
+        d = new Date();
+
+        
+        // update clock
+        data.time.html(format_time(d));
 
         if (!data.latest_day || data.latest_day.day.getDate() != d.getDate()) {
             data.latest_day = {
@@ -105,18 +111,16 @@
                 if ((matches = resp.match(/Moonset\s+(\d+:\d+ [ap]\.m\.) on following day/)))
                     data.latest_day.moonset = new Date(ampm2date(matches[1]).getTime() + 86400000);
 
-                data.sunset.html(data.latest_day.sunset.getHours()+":"+data.latest_day.sunset.getMinutes());
-                data.sunrise.html(data.latest_day.sunrise.getHours()+":"+data.latest_day.sunrise.getMinutes());
-                data.moonset.html(data.latest_day.moonset.getHours()+":"+data.latest_day.moonset.getMinutes());
-                data.moonrise.html(data.latest_day.moonrise.getHours()+":"+data.latest_day.moonrise.getMinutes());
+                data.sunrise.html(format_time(data.latest_day.sunrise))
+                data.sunset.html(format_time(data.latest_day.sunset))
+                data.moonrise.html(format_time(data.latest_day.moonrise))
+                data.moonset.html(format_time(data.latest_day.moonset))
 
             });
 
         }
 
 
-        // update clock
-        data.time.html(s);
 
 
         function animate_rising_setting(origin_x, origin_y, radius, target, rise, set)
@@ -140,6 +144,7 @@
         }
         animate_rising_setting(150, 150, 100, data.sun, data.latest_day.sunrise.getTime(), data.latest_day.sunset.getTime());
         animate_rising_setting(150, 150, 100, data.moon, data.latest_day.moonrise.getTime(), data.latest_day.moonset.getTime());
+
 
         // re-tick
         setTimeout(tick, 500, data);
@@ -167,7 +172,7 @@
 
 
 
-                    var $container = $('<div>  <div class="sun"><img src="img/sun.jpg"/></div>  <div class="moon"></div>  <div class="time"/><div class="rise"><div class="sunrise"/><div class="moonrise"/></div><div class="set"><div class="sunset"/><div class="moonset"/></div> </div>')
+                    var $container = $('<section>  <div class="sun"><img src="img/sun.jpg"/></div>  <div class="moon"></div> <div class="cloudcover"/> <div class="current"><div class="temperature"/><div class="time"/><div class="dewpoint"/><div class="conditions"/></div>  <div class="rise"><div class="sunrise"/><div class="moonrise"/></div><div class="set"><div class="sunset"/><div class="moonset"/></div> </section>')
                     $this.append($container)
 
                     data.sun = $container.find('.sun')
@@ -176,7 +181,11 @@
                     data.sunset = $container.find('.sunset')
                     data.moonrise = $container.find('.moonrise')
                     data.moonset = $container.find('.moonset')
+                    data.temperature = $container.find('.temperature')
                     data.time = $container.find('.time')
+                    data.dewpoint = $container.find('.dewpoint')
+                    data.conditions = $container.find('.conditions')
+                    data.cloudcover = $container.find('.cloudcover')
 
 
                     tick(data);
@@ -202,6 +211,23 @@
                 data = $this.data(PLUGIN);
 
                 data.metar = parse_metar(metar_string)
+                console.log(data.metar)
+
+
+                data.temperature.html(Math.round(data.metar.temp_f)+" &deg;F")
+                data.dewpoint.html(Math.round(data.metar.dewpoint_f)+" &deg;F")
+
+                data.cloudcover.html('');
+                for (var i=0; i < data.metar.clouds.length; i++) {
+                    var cloud = data.metar.clouds[i];
+                    var cover = cloud[0].toLowerCase();
+                    var altitude = cloud[1];
+                    data.cloudcover.prepend('<img class="'+cover+'" src="img/cloudcover/'+cover+'.png"/>');
+                }
+
+
+                data.conditions.html( data.metar.weather.join('<br/>') );
+
 
 
             });
