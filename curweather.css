@@ -1,7 +1,7 @@
 
 #container {
     width: 300px;
-    height: 300px;
+    height: 250px;
     font-family: helvetica;
 
     position: relative;
@@ -44,7 +44,7 @@ div.set {
 div.current {
     position: absolute;
     left: 50px;
-    top: 100px;
+    top: 80px;
     width: 200px;
     text-align: center;
 
@@ -80,4 +80,25 @@ div.moon img {
 div.cloudcover img {
     width: 300px;
     opacity: 0.8;
+}
+
+div.curtemp {
+    width: 50px;
+    margin: auto;
+}
+div.tempdew {
+    float: right;
+    font-size: 12px;
+}
+div.current label.unit {
+    float: right;
+    font-size: 24px;
+}
+
+div.curpressure {
+    width: 100px;
+    margin: auto;
+}
+div.pressure {
+    float: right;
 }

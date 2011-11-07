@@ -171,21 +171,18 @@
                     $this.data(PLUGIN, data);
 
 
-
-                    var $container = $('<section>  <div class="sun"><img src="img/sun.jpg"/></div>  <div class="moon"></div> <div class="cloudcover"/> <div class="current"><div class="temperature"/><div class="time"/><div class="dewpoint"/><div class="conditions"/></div>  <div class="rise"><div class="sunrise"/><div class="moonrise"/></div><div class="set"><div class="sunset"/><div class="moonset"/></div> </section>')
-                    $this.append($container)
-
-                    data.sun = $container.find('.sun')
-                    data.moon = $container.find('.moon')
-                    data.sunrise = $container.find('.sunrise')
-                    data.sunset = $container.find('.sunset')
-                    data.moonrise = $container.find('.moonrise')
-                    data.moonset = $container.find('.moonset')
-                    data.temperature = $container.find('.temperature')
-                    data.time = $container.find('.time')
-                    data.dewpoint = $container.find('.dewpoint')
-                    data.conditions = $container.find('.conditions')
-                    data.cloudcover = $container.find('.cloudcover')
+                    data.sun = $this.find('.sun')
+                    data.moon = $this.find('.moon')
+                    data.sunrise = $this.find('.sunrise')
+                    data.sunset = $this.find('.sunset')
+                    data.moonrise = $this.find('.moonrise')
+                    data.moonset = $this.find('.moonset')
+                    data.temperature = $this.find('.temperature')
+                    data.time = $this.find('.time')
+                    data.dewpoint = $this.find('.dewpoint')
+                    data.pressure = $this.find('.pressure')
+                    data.conditions = $this.find('.conditions')
+                    data.cloudcover = $this.find('.cloudcover')
 
 
                     tick(data);
@@ -214,8 +211,9 @@
                 console.log(data.metar)
 
 
-                data.temperature.html(Math.round(data.metar.temp_f)+" &deg;F")
-                data.dewpoint.html(Math.round(data.metar.dewpoint_f)+" &deg;F")
+                data.temperature.html(Math.round(data.metar.temp_f))
+                data.dewpoint.html(Math.round(data.metar.dewpoint_f))
+                data.pressure.html(data.metar.pressure_in)
 
                 data.cloudcover.html('');
                 for (var i=0; i < data.metar.clouds.length; i++) {
