@@ -41,30 +41,20 @@
 
     function tick(data) {
         d = new Date();
+        if (!data.latest_day) {
+            data.latest_day = {
+                'day': null,
+            };
+        }
 
-        // update clock
+        // update clock once per tick
         data.time.html(format_time(d));
 
-        if (!data.latest_day || data.latest_day.day.getDate() != d.getDate()) {
-            data.latest_day = {
-                'day': d,
-            };
 
-
-            /* wunderground moon phase*/
-            var key = "astronomy_"+data.options.ZIPCODE+d.getYear()+d.getMonth()+d.getDay();
-            var url = "http://api.wunderground.com/api/"+data.options.WUNDERGROUND_KEY+"/astronomy/q/"+data.options.ZIPCODE+".json";
-            cached_get(key, url, function(obj) {
-                data.latest_day.moon_illum = obj.moon_phase.percentIlluminated
-                data.latest_day.moon_age = obj.moon_phase.ageOfMoon
-
-                var wax_or_wane = 'wax'
-                if (data.latest_day.moon_age >= 15) {
-                    wax_or_wane = 'wane'
-                }
-
-                data.moon.html('<img src="img/moonvis/moon_'+wax_or_wane+'_'+data.latest_day.moon_illum+'.jpg"/>')
-            });
+        // once per hour updates
+        if (!data.latest_day.hour || (data.latest_day.hour != d.getHours())) 
+        {
+            data.latest_day.hour = d.getHours();
 
             var key = "history_"+data.options.ZIPCODE+d.getYear()+d.getMonth()+d.getDay()+d.getHours();
             var url = "http://api.wunderground.com/api/"+data.options.WUNDERGROUND_KEY+"/history/q/"+data.options.ZIPCODE+".json";
@@ -73,7 +63,6 @@
                     var observation = obj.history.observations[i];
 
                     if (!(observation.metar in data.metar_history)) {
-                        //console.log(observation)
 
                         data.target.curweather('update', observation.metar);
                         data.metar_history[observation.metar] = true;
@@ -133,8 +122,41 @@
 
                 }
             });
+        }
 
-            // us navy {sun,moon}{rise,set} times
+        // once per day updates
+        if (!data.latest_day.day || (data.latest_day.day != d.getDate())) {
+            data.latest_day.day = d.getDate();
+
+
+            /* wunderground moon phase*/
+            var key = "astronomy_"+data.options.ZIPCODE+d.getYear()+d.getMonth()+d.getDay();
+            var url = "http://api.wunderground.com/api/"+data.options.WUNDERGROUND_KEY+"/astronomy/q/"+data.options.ZIPCODE+".json";
+            cached_get(key, url, function(obj) {
+                data.latest_day.moon_illum = obj.moon_phase.percentIlluminated
+                data.latest_day.moon_age = obj.moon_phase.ageOfMoon
+
+                var wax_or_wane = 'wax'
+                if (data.latest_day.moon_age >= 15) {
+                    wax_or_wane = 'wane'
+                }
+
+                data.moon.html('<img src="img/moonvis/moon_'+wax_or_wane+'_'+data.latest_day.moon_illum+'.jpg"/>')
+            });
+
+
+            /* wunderground almanac */
+            var key = "almanac_"+data.options.ZIPCODE+d.getYear()+d.getMonth()+d.getDay();
+            var url = "http://api.wunderground.com/api/"+data.options.WUNDERGROUND_KEY+"/almanac/q/"+data.options.ZIPCODE+".json";
+            cached_get(key, url, function(obj) {
+                //console.log(obj)
+
+                data.latest_day.temp_normal_f = [obj.almanac.temp_low.normal.F, obj.almanac.temp_high.normal.F]
+                data.latest_day.temp_record_f = [obj.almanac.temp_low.record.F, obj.almanac.temp_high.record.F]
+            });
+
+
+            /* us navy {sun,moon}{rise,set} times */
             var key = "usno.navy.mil_"+data.options.ZIPCODE+d.getYear()+d.getMonth()+d.getDay();
             var url = "http://aa.usno.navy.mil/cgi-bin/aa_pap.pl"
             var url_data = {
@@ -187,7 +209,7 @@
 
 
 
-
+        /* animate the sun/moon times */
         function animate_rising_setting(origin_x, origin_y, radius, target, rise, set)
         {
             var now = new Date().getTime();
@@ -300,7 +322,7 @@
                     var max = 1100
                     var mercury = (data.metar.pressure_sea-min) / (max - min)
                     mercury *= 100
-                    data.target.find('.pressure .mercury').css({'height': (mercury+1)+"%", 'top':(100-mercury)+'%'})
+                    data.target.find('.pressure .mercury').css({'height': (mercury)+"%", 'top':(102-mercury)+'%'})
                 }
 
 
